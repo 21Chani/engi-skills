@@ -6,7 +6,7 @@ Claude Code plugins by 21Chani.
 
 ```bash
 claude plugin marketplace add 21Chani/claude-skills
-claude plugin install planner@chani-skills
+claude plugin install planner@engi-skills
 ```
 
 ## planner
