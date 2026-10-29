@@ -1,11 +1,11 @@
-# claude-skills
+# engi-skills
 
 Claude Code plugins by 21Chani.
 
 ## Install
 
 ```bash
-claude plugin marketplace add 21Chani/claude-skills
+claude plugin marketplace add 21Chani/engi-skills
 claude plugin install planner@engi-skills
 ```
 
