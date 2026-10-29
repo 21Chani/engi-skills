@@ -1,0 +1,14 @@
+{
+  "name": "chani-skills",
+  "description": "Claude Code skills by 21Chani",
+  "owner": {
+    "name": "21Chani"
+  },
+  "plugins": [
+    {
+      "name": "planner",
+      "source": "./plugins/planner",
+      "description": "Plan a feature as small PRs in markdown, then build it one step at a time across sessions"
+    }
+  ]
+}
