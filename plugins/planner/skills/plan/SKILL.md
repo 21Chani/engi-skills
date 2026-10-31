@@ -14,6 +14,17 @@ when the fix looks obvious. The only files it writes are the plan documents and
 
 Goal or plan name: $ARGUMENTS
 
+For a new plan, copy this list into your first reply and tick it as you go:
+
+```
+- [ ] Settings read
+- [ ] Goal clear
+- [ ] Research done, index.md started
+- [ ] Decisions recorded in index.md
+- [ ] PR outline agreed
+- [ ] PR files written and checked
+```
+
 ## 1. Settings
 
 Read `.claude/planner.md` in the repo root.
@@ -38,7 +49,7 @@ Change these settings only when the user asks to. Never because a plan seems to 
 ## 2. New plan or revision
 
 List the folders in the plans folder. If `$ARGUMENTS` names one of them, or clearly describes
-the same goal, this is a revision: go to section 7. If it is empty, ask which plan to revise or
+the same goal, this is a revision: go to section 8. If it is empty, ask which plan to revise or
 what to plan.
 
 ## 3. Understand the goal
@@ -64,6 +75,11 @@ conclude.
 - Run independent agents in parallel. Ask each for a short report: findings, options with
   trade-offs, open risks, sources.
 
+When research is done, start the plan on disk before asking anything: create
+`<plans>/<slug>/` and write `index.md` with the title, the problem, Goal, Out of scope,
+Where things are today, Sources and the questions still open under Open topics. Leave PRs empty.
+The plan then grows a little at each step instead of being written all at once at the end.
+
 ## 5. Decide with the user
 
 Count what the user has to read. If presenting the findings would take more than about 15
@@ -74,18 +90,21 @@ lines, or there are more than two real decisions, go topic by topic:
    options, and which one you recommend and why.
 3. Ask with AskUserQuestion, recommended option first. Use plain text questions only when the
    answer is free-form.
-4. Record the decision in `index.md` right away, under Decisions, and remove the topic from Open
-   topics. A long planning session can then stop and pick up again without losing anything.
 
 Otherwise give everything in one short message and ask once.
 
+After each answer, on either path, add the decision to `index.md` under Decisions and remove it
+from Open topics. A long planning session can then stop and pick up again without losing
+anything.
+
 If a decision raises a question the research didn't cover, research again before asking.
 
-## 6. Write the plan
+## 6. Agree on the shape
 
-Write `<plans>/<slug>/index.md` and one `NN-<pr-slug>.md` per PR, following
-[templates.md](templates.md). Create the folder at the start of section 5, so decisions have
-somewhere to go.
+Before writing any PR file, show the breakdown in one message: each PR as `N. title: purpose`,
+with its step titles indented under it and what it depends on. Then ask with AskUserQuestion:
+**Write it** (recommended), **Change the split**, **Go back to a decision**. Changing a short
+outline is cheap; rewriting finished files is not.
 
 Break the work into PRs a reviewer can follow:
 
@@ -98,10 +117,26 @@ Break the work into PRs a reviewer can follow:
 - Put risks and things to watch on the PR they belong to, not in a general list.
 - Note follow-ups that came up but are not part of the goal, so they are not lost.
 
-When the plan is written, tell the user in at most 5 lines: the plan's path, the PRs in one line
+## 7. Write the PR files
+
+Follow [templates.md](templates.md), including its length limits. `index.md` already exists;
+only the PR files, the PR table, **Resume** and Follow-ups are left.
+
+- Use the Write tool, one call per file, and send all the calls in one message. Use Edit for
+  `index.md`. Don't write plan files with Bash heredocs: one long shell call hides progress and
+  breaks on quotes and backticks.
+- Write what was agreed in section 6. Don't add PRs or steps the user didn't see.
+
+Before reporting, check:
+
+- Every row in the PR table links to a file that exists, with the same number and title.
+- Every step has a commit title and a **Check**.
+- **Resume** points at PR 1, step 1, and Open topics is empty or says why it isn't.
+
+Fix what fails, then tell the user in at most 5 lines: the plan's path, the PRs in one line
 each, and how to start: `/clear`, then `/planner:next`.
 
-## 7. Revise a plan
+## 8. Revise a plan
 
 Plans change. What has shipped does not.
 
@@ -123,7 +158,7 @@ anything.
   uncommitted changes in the working tree, say which files, and leave them alone.
 
 Use the same flow as a new plan: research what is new, decide topic by topic if it is large,
-then update the files. Add a line under Changes in `index.md` for each revision.
+show what changes in the outline, then update the files with Edit. Add a line under Changes in `index.md` for each revision.
 
 ## Writing
 

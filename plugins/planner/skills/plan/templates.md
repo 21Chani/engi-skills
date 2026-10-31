@@ -3,6 +3,16 @@
 Leave out a section that would be empty. Keep the status legend in every `index.md`, so any
 session reading the plan knows what the marks mean.
 
+Length limits. The plan is read at the start of every `/planner:next` session, so every line
+costs time twice: once to write and again each time it is read.
+
+- Intro: at most 4 sentences. Goal and Out of scope: one line each.
+- Where things are today: at most 6 bullets, one or two lines each. Name files and functions;
+  don't retell the research.
+- Decisions: one line each. Follow-ups and Things to watch: one or two lines each.
+- PR files: Why, at most 3 sentences. Each step, at most 2 lines plus a one-line Check.
+- A PR file over about 40 lines usually means the PR should be split.
+
 ## index.md
 
 ```markdown

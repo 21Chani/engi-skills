@@ -1,6 +1,6 @@
 {
   "name": "planner",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Plan a feature as small PRs in markdown, then build it one step at a time across sessions",
   "author": {
     "name": "21Chani"
