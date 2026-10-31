@@ -21,63 +21,76 @@ Arguments: $ARGUMENTS
 3. Read `index.md`, `handoff.md` if it exists, and the PR file named on the **Resume** line.
    Read other PR files only when the step depends on them.
 
-## 2. Bring the plan up to date
+## 2. Check the plan against git
 
 The plan may be behind git. Before the recap, check `git status`, `git log --oneline` on the
 current branch and the default branch, and `gh pr list --state all` when `gh` is available.
 
-- A step whose commit title is in the log becomes `[x]` with its short sha.
-- A PR that is open or merged gets `open #N` or `merged #N <date>`.
-- Move the **Resume** line to the first step that is not `[x]`.
+- A step whose commit title is in the log is done, with its short sha.
+- A PR that is open or merged is `open #N` or `merged #N <date>`.
+- The next step is the first one that is not done.
 - If the code no longer matches what the plan assumes (files moved, the step already done some
   other way), say so in the recap and offer `/planner:plan <slug>` to revise.
 
-Write these updates to the files without asking; they record facts, not decisions.
+Keep these facts in mind; they are written to the plan in section 5, not now.
 
 ## 3. Recap and wait
 
-Unless the arguments say `go` (or the user said to start in their own words), show at most 8
-lines and wait:
+Unless the arguments say `go` (or the user said to start in their own words), reply with a
+recap of at most 8 lines and end the turn:
 
 - **PR N, step M:** commit title
 - **What it does:** one or two lines on the result, not the method
 - **Where:** files it will touch
 - **Check:** how we will know it works
 - **Branch:** the branch, and whether it has to be created
-- Anything from `handoff.md` or step 2 the user should know
+- Anything from `handoff.md` or section 2 the user should know
 
-Then ask with AskUserQuestion: **Start** (recommended), **Revise the plan first**
-(`/planner:plan <slug>`), **Pick another step**. With `go`, give the recap in one line and start.
+End with one line: "Say `go` to start, or tell me what to change." Don't use AskUserQuestion
+here: the recap is for reading, and a plain reply is faster than a dialog. With `go`, give the
+recap in one line and start.
 
 ## 4. Build the step
 
 - Follow the repo's own rules (`CLAUDE.md`, `.claude/rules/`, contributing docs). They win over
   this skill.
 - Do this step only. If it turns out bigger than planned, or the plan is wrong, stop and ask.
-  Small fixes to open steps can go straight into the PR file, with a line under Changes in
-  `index.md`. Anything that changes the shape of the plan goes through `/planner:plan`.
+  Small fixes to open steps are kept for section 6 and written then. Anything that changes
+  the shape of the plan goes through `/planner:plan`.
 - Never rewrite a pushed commit or touch a merged PR. A change to an open PR is a new commit
   on it; if the change reworks its core, stop and offer `/planner:plan` to close and replace it.
 - Run the step's **Check**. If it fails, report the output; don't mark the step done.
 
-## 5. Record and stop
+## 5. Report and stop
 
-1. Mark the step `[~]` and update **Resume**.
-2. Tell the user in at most 5 lines what changed and how it was checked.
-3. Ask with AskUserQuestion:
-   - **Commit as `<title>`**: choosing it is the user asking to commit. Use the repo's commit
-     skill or convention, then mark the step `[x] <sha>`.
-   - **Next step**: back to section 3 for the following step.
-   - **Stop here.**
+Tell the user in at most 5 lines what changed and how it was checked. End with one line:
+"`commit` to commit as `<title>`, `next` for the following step, or `stop`." Don't use
+AskUserQuestion. Then end the turn.
 
-Never commit, push or open a PR unless the user picks or asks for it. When the last step of a PR
-is committed, offer to push and open the PR, and mark it `open #N` once it exists.
+- `commit` is the user asking to commit. Use the repo's commit skill or convention.
+- `next` goes back to section 3 for the following step. Don't update the plan files yet.
+- Never commit, push or open a PR unless the user asks. When the last step of a PR is committed,
+  offer to push and open the PR.
+
+## 6. Update the plan once
+
+Don't touch the plan files while working. Update them in one pass when the work for this
+session ends: the user says `stop`, a PR is finished, you suggest `/clear`, or the session is
+about to end mid-step.
+
+In that pass, rewrite each changed file with one Write call, all calls in one message:
+
+- PR file: each step `[x] <sha>` if committed, `[~]` if built but not committed, `[ ]` otherwise.
+- `index.md`: PR statuses (`in progress`, `open #N`, `merged #N <date>`), the **Resume** line,
+  and a line under Changes for any fix made to open steps.
+- `handoff.md`: write it if stopping mid-step, delete it if that step is now done.
+
+Include the git facts from section 2, even when no step was built.
 
 ## Keeping context small
 
 - One PR per session is a good limit. After a PR is done, or when the conversation has grown
   long, suggest `/clear` and `/planner:next` instead of carrying on.
-- When stopping in the middle of a step, write `handoff.md` in the plan folder: what is done, by
-  file; what is left; what was found on the way; and changes in the tree that are not part of
-  this step. Delete it when the step is done.
+- `handoff.md` (written in section 6 when stopping mid-step) says what is done, by file; what
+  is left; what was found on the way; and changes in the tree that are not part of this step.
 - Send wide searches to an Explore agent and keep only what it concludes.
