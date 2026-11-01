@@ -9,6 +9,11 @@
       "name": "planner",
       "source": "./plugins/planner",
       "description": "Plan a feature as small PRs in markdown, then build it one step at a time across sessions"
+    },
+    {
+      "name": "pr",
+      "source": "./plugins/pr",
+      "description": "Write short, friendly PR descriptions that say what the change does and why"
     }
   ]
 }
