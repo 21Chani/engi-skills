@@ -1,0 +1,8 @@
+{
+  "name": "pr",
+  "version": "0.1.0",
+  "description": "Write short, friendly PR descriptions that say what the change does and why, in a line or two",
+  "author": {
+    "name": "21Chani"
+  }
+}
