@@ -48,10 +48,18 @@ Sort what you found:
 - **Only if it's worth it:** a "why this way" note, when a reviewer would otherwise ask or
   undo it (a non-obvious workaround, a constraint that bites, a value that must never change).
   One sentence each, at most two of them.
-- **Only if a reviewer must act:** what wasn't tested, or a known gap. One short line.
+- **Only if a reviewer must act:** a known gap, a risky migration, something that breaks
+  until a follow-up lands. It must come from the user or the code (a TODO, a disabled flag),
+  never from what this session happened not to run. As a GitHub alert, not a prose line:
+  `> [!WARNING]` when ignoring it breaks something, `> [!NOTE]` otherwise. Most PRs have none.
 - **Leave out:** file paths, class and method names (unless the reader needs them to find or
   use the thing), lifecycle hooks, how it was implemented, "both commits compile", and
   anything the diff already says plainly.
+- **Never:** what Claude checked or didn't. The session sees only part of the work; the
+  author runs the app, plays it, clicks through it, and doesn't narrate that to Claude. "I've
+  only checked this in code" describes the session, not the change. Same for a test plan
+  addressed to the reviewer ("open X and try Y") unless the template asks for one or the user
+  wrote it.
 
 Size follows the change, not the effort. A two-file feature gets two to four lines. A big PR
 may get a short list, but each item stays one line.
@@ -62,8 +70,10 @@ Don't ask about what you can read or reasonably guess. Ask when the answer chang
 description says, for example:
 
 - the reason for the change is nowhere in the code, commits or conversation;
-- something could go either way and matters to readers (is this user-facing yet? is the
-  untested part worth flagging?);
+- something could go either way and matters to readers (is this user-facing yet? is there a
+  case the author knows is broken?);
+- a warning seems needed but nothing in the session says whether it's real. Ask the author
+  ("did you try it with a post on both sides?") instead of writing the doubt into the PR;
 - the user's notes contradict the code;
 - the template has a section only the author can fill: how it was tested, evidence,
   screenshots, recordings, reproduction steps (see section 4).
@@ -99,7 +109,7 @@ section, by what kind of section it is, not by its exact name:
   or drop the section if the template marks it optional.
 
 The voice rules below still apply inside each section. Don't add sections the template
-doesn't have, except a one-line heads-up from section 2 when a reviewer must act.
+doesn't have, except a warning alert from section 2 when a reviewer must act.
 
 ### Without a template
 
@@ -112,7 +122,9 @@ Default shape:
 
 <Optional: defaults, how to change them, what it sets up next.>
 
-<Optional: one "why this way" or "heads up" line.>
+<Optional: one "why this way" line.>
+
+<Rare: a > [!WARNING] or > [!NOTE] alert, only for a gap the user or the code names.>
 ```
 
 Voice:
@@ -123,7 +135,23 @@ Voice:
 - No headings beyond the first (or the template's own), no bold labels like **Checked:**, no
   bullet list for two facts.
 
-## 5. Show, then post
+## 5. Read it back as the author
+
+Before showing the draft, read each sentence as if the author typed it and ask: would they
+write this, and would it survive their edit? Cut or rewrite anything that wouldn't. Typical
+leftovers from a session:
+
+- the session's own process: "I've only checked…", "I couldn't run…", "verified in code",
+  "as discussed";
+- labels that announce a caveat: "Heads up:", "Note:", "Worth noting", "Keep in mind";
+- instructions to the reviewer nobody asked for: "Look in X and try A, B and C";
+- hedges about the author's own work: "should work", "seems to fix".
+
+These are examples, not the whole list. Calibrate against the house style from section 1: if
+recent PRs never carry a kind of line (caveats, test steps, a closing remark), don't add one.
+When rewriting a PR the user already edited, what they removed is a rule; don't put it back.
+
+## 6. Show, then post
 
 Show the title and description to the user and end the turn. If you left template sections
 empty for them (testing, evidence), list them in one line. Say: "`post` to put it on the PR,
@@ -148,14 +176,20 @@ Cap the frame rate at 60 FPS. Without a cap the game renders as many frames as i
 focus it drops to 15 FPS.
 
 There are three modes (capped, VSync, uncapped), ready to plug into user settings later.
-
-Heads up: the 15 FPS drop when unfocused couldn't be tested yet.
 ```
 
-What stayed: the effect, the reason, the default, what it sets up, and the one thing a
-reviewer should try by hand. What went: file paths, `BeforeSceneLoad`, VSync internals, enum
-ordering, "compiles with no warnings". Any of those would come back only if a reviewer would
-otherwise get it wrong.
+What stayed: the effect, the reason, the default, and what it sets up. What went: file paths,
+`BeforeSceneLoad`, VSync internals, enum ordering, "compiles with no warnings", and any line
+about what was or wasn't tested; the user didn't bring it up. Any of those would come back
+only if a reviewer would otherwise get it wrong.
+
+Had the user said the unfocused drop can't be tested until the build pipeline lands, it would
+end with:
+
+```markdown
+> [!NOTE]
+> The 15 FPS drop when unfocused can't be checked in the Editor; it needs a build.
+```
 
 ## Example with a template
 
