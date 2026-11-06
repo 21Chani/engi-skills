@@ -13,7 +13,7 @@
     {
       "name": "pr",
       "source": "./plugins/pr",
-      "description": "Write short, friendly PR descriptions that say what the change does and why"
+      "description": "Open PRs with titles that pass repo checks, and write short, friendly descriptions of what the change does and why"
     }
   ]
 }
