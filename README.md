@@ -33,6 +33,7 @@ core; you choose. The rest of the plan can change freely.
 | Command | Does |
 |---|---|
 | `/pr:describe [PR or branch] [notes]` | Reads the diff, commits and conversation, and writes a short PR description: what it does and why, in a line or two. Asks only when the answer changes the text. Shows the draft and posts it only when you say `post`. |
+| `/pr:open [base \| stacked \| draft] [notes]` | Opens a PR without duplicating one: checks for an existing PR on the branch, works out the base (default branch or stacked), fits the title to the repo's PR title checks, and writes the body with `/pr:describe`. Asks when the intent isn't clear. |
 
-Claude can also use it on its own when opening a PR. Text in `[brackets]` in your notes is
-for Claude, not for the PR.
+Claude can also use both on its own when you ask it to open a PR. Text in `[brackets]` in your
+notes is for Claude, not for the PR.
