@@ -1,6 +1,6 @@
 ---
 name: next
-description: Pick up a plan written by /planner:plan, recap the next step, and build it once the user says go. One step at a time.
+description: Pick up a plan written by /planner:plan, recap the next step, and build it once the user says go; later steps in the same run start straight away. One step at a time.
 disable-model-invocation: true
 argument-hint: "[plan name] [PR N step M] [go]"
 ---
@@ -8,7 +8,8 @@ argument-hint: "[plan name] [PR N step M] [go]"
 # Next step
 
 Build the next step of a plan from `/planner:plan`. A step is one commit. The user stays in
-control: recap first, build only after they say go, then stop.
+control: recap first, build only after they say go, then stop. Once a run has started, asking
+for the next step is the go.
 
 Arguments: $ARGUMENTS
 
@@ -34,10 +35,20 @@ current branch and the default branch, and `gh pr list --state all` when `gh` is
 
 Keep these facts in mind; they are written to the plan in section 5, not now.
 
-## 3. Recap and wait
+## 3. Recap, then wait or start
 
-Unless the arguments say `go` (or the user said to start in their own words), reply with a
-recap of at most 8 lines and end the turn:
+Wait for `go` only at the start of a run. Start right away, with the recap in one line, when:
+
+- the arguments say `go`, or the user said to start in their own words;
+- the run is already going: a step of this plan was built in this conversation and the user
+  asks for the following one, in any wording (`next`, `commit and next`, `commit and move on`,
+  `keep going`, `/planner:next` again).
+
+Even mid-run, wait when section 2 found something the user should decide on (the code no longer
+matches the plan, a `handoff.md`), or the next step opens a new PR: there, suggest `/clear` and
+`/planner:next` instead.
+
+To wait, reply with a recap of at most 8 lines and end the turn:
 
 - **PR N, step M:** commit title
 - **What it does:** one or two lines on the result, not the method
@@ -64,11 +75,16 @@ recap in one line and start.
 ## 5. Report and stop
 
 Tell the user in at most 5 lines what changed and how it was checked. End with one line:
-"`commit` to commit as `<title>`, `next` for the following step, or `stop`." Don't use
-AskUserQuestion. Then end the turn.
+"`commit`, `commit and next` to commit as `<title>` and start the following step, `next`, or
+`stop`." Don't use AskUserQuestion. Then end the turn.
 
-- `commit` is the user asking to commit. Use the repo's commit skill or convention.
-- `next` goes back to section 3 for the following step. Don't update the plan files yet.
+- `commit` is the user asking to commit. Use the repo's commit skill or convention. After
+  committing, end with one line naming the following step and "say `next` to start it", not a
+  pointer to `/planner:next`.
+- `next` goes back to section 3 for the following step, which starts without waiting. Don't
+  update the plan files yet.
+- A reply that asks for both, in any wording, commits and then goes on as `next`, in the same
+  turn.
 - Never commit, push or open a PR unless the user asks. When the last step of a PR is committed,
   offer to push and open the PR.
 

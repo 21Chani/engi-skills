@@ -18,7 +18,7 @@ run only when you type them.
 | Command | Does |
 |---|---|
 | `/planner:plan <goal>` | Researches the code and the web, settles decisions with you topic by topic, and writes the plan as markdown. Run it on an existing plan to revise it. Never writes code. |
-| `/planner:next [go]` | Loads the plan, syncs it with git, recaps the next step and waits for your go. Builds one step, then stops. |
+| `/planner:next [go]` | Loads the plan, syncs it with git, recaps the next step and waits for your go; later steps in the same run start on `next` or `commit and next`. Builds one step, then stops. |
 
 The first `/planner:plan` in a repo asks where plans live and whether git tracks, ignores or
 locally excludes them. The answer is saved in `.claude/planner.md`.
